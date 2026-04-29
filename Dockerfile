@@ -5,8 +5,10 @@ COPY . .
 RUN mvn clean package -DskipTests
 
 # Run stage
-FROM openjdk:17-jdk-slim
+# Thay đổi dòng này từ openjdk sang eclipse-temurin hoặc amazoncorretto
+FROM eclipse-temurin:17-jdk-alpine
 WORKDIR /app
-COPY --from=build /app/target/backend-0.0.1-SNAPSHOT.jar demo.jar
+# Sử dụng dấu * để tránh lỗi sai tên file JAR cụ thể
+COPY --from=build /app/target/*.jar demo.jar
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "demo.jar"]
