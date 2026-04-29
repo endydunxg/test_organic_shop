@@ -19,9 +19,9 @@ dist/
 ############################
 # 🚫 Application config (chứa secret)
 ############################
-application.yaml
-application.yml
-application.properties
+# application.yaml
+# application.yml
+# application.properties
 
 # 👉 Giữ lại file mẫu
 !application-example.yaml
