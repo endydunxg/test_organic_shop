@@ -105,17 +105,20 @@ public class OrderServiceImpl implements OrderService {
         cart.getItems().clear();
         cartRepository.save(cart);
 
-        try {
-            mailService.sendOrderConfirmation(
-                user.getEmail(), 
-                user.getFullName(), 
-                savedOrder.getId(), 
-                savedOrder.getTotalPrice().toString()
-            );
-        } catch (Exception e) {
-            // Log exception, don't fail the order just because mail failed
-            System.err.println("Failed to send order confirmation email: " + e.getMessage());
-        }
+        // GÓI GỬI MAIL VÀO THREAD MỚI ĐỂ KHÔNG CHỜ PHẢN HỒI LÂU
+        new Thread(() -> {
+            try {
+                mailService.sendOrderConfirmation(
+                    user.getEmail(), 
+                    user.getFullName(), 
+                    savedOrder.getId(), 
+                    savedOrder.getTotalPrice().toString()
+                );
+            } catch (Exception e) {
+                // Log exception, don't fail the order just because mail failed
+                System.err.println("Failed to send order confirmation email: " + e.getMessage());
+            }
+        }).start();
 
         return mapToDTO(savedOrder);
     }
