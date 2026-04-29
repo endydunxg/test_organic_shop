@@ -1,0 +1,42 @@
+@import url("https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700;800&display=swap");
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    color-scheme: light;
+  }
+
+  body {
+    @apply bg-mist text-slate-800 font-body;
+    background:
+      radial-gradient(circle at top left, rgba(171, 214, 161, 0.35), transparent 30%),
+      radial-gradient(circle at top right, rgba(233, 246, 213, 0.7), transparent 28%),
+      linear-gradient(180deg, #f6f7ef 0%, #edf5ea 45%, #f7faf5 100%);
+  }
+
+  * {
+    scrollbar-width: thin;
+    scrollbar-color: #4caf50 #eef8ef;
+  }
+}
+
+@layer components {
+  .shell {
+    @apply mx-auto w-full max-w-7xl px-4 sm:px-6 lg:px-8;
+  }
+
+  .panel {
+    @apply rounded-[28px] border border-white/70 bg-white/90 shadow-soft backdrop-blur;
+  }
+
+  .button-primary {
+    @apply inline-flex items-center justify-center rounded-full bg-leaf px-5 py-3 text-sm font-semibold text-white transition hover:bg-moss;
+  }
+
+  .button-secondary {
+    @apply inline-flex items-center justify-center rounded-full border border-leaf/20 bg-white px-5 py-3 text-sm font-semibold text-moss transition hover:border-leaf hover:text-leaf;
+  }
+}
