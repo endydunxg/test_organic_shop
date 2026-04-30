@@ -30,6 +30,7 @@ import com.organicshop.backend.entity.PaymentStatus;
 import com.organicshop.backend.exception.BadRequestException;
 import com.organicshop.backend.exception.ResourceNotFoundException;
 import com.organicshop.backend.repository.OrderRepository;
+import com.organicshop.backend.service.MailService;
 import com.organicshop.backend.service.PaymentService;
 
 import lombok.RequiredArgsConstructor;
@@ -41,6 +42,7 @@ public class PaymentServiceImpl implements PaymentService {
     private final OrderRepository orderRepository;
     private final VnpayProperties vnpayProperties;
     private final OutboundIdentityProperties outboundIdentityProperties;
+    private final MailService mailService;
 
     @Value("${app.frontend-url:}")
     private String frontendUrl;
@@ -100,7 +102,8 @@ public class PaymentServiceImpl implements PaymentService {
         String secureHash = params.get("vnp_SecureHash");
         Map<String, String> filteredParams = params.entrySet().stream()
                 .filter(entry -> entry.getValue() != null && !entry.getValue().isBlank())
-                .filter(entry -> !"vnp_SecureHash".equals(entry.getKey()) && !"vnp_SecureHashType".equals(entry.getKey()))
+                .filter(entry -> !"vnp_SecureHash".equals(entry.getKey())
+                        && !"vnp_SecureHashType".equals(entry.getKey()))
                 .collect(Collectors.toMap(Map.Entry::getKey, Map.Entry::getValue));
 
         String expectedHash = hmacSha512(vnpayProperties.getHashSecret(), buildQuery(filteredParams, true));
@@ -118,8 +121,20 @@ public class PaymentServiceImpl implements PaymentService {
         boolean success = "00".equals(responseCode) && "00".equals(transactionStatus);
 
         order.setPaymentStatus(success ? PaymentStatus.PAID : PaymentStatus.FAILED);
-        if (success && order.getOrderStatus() == OrderStatus.PENDING) {
-            order.setOrderStatus(OrderStatus.PROCESSING);
+
+        // Không đổi orderStatus, giữ nguyên PENDING
+        if (success) {
+            String customerName = order.getUser().getFullName();
+            if (customerName == null || customerName.isEmpty()) {
+                customerName = "Khách hàng";
+            }
+
+            // Bắn API gửi mail ngay khi VNPAY báo thành công
+            mailService.sendOrderConfirmation(
+                    order.getUser().getEmail(),
+                    customerName,
+                    order.getId(),
+                    order.getTotalPrice().toString());
         }
         orderRepository.save(order);
 
@@ -147,7 +162,8 @@ public class PaymentServiceImpl implements PaymentService {
         return clientIp;
     }
 
-    private String buildFrontendPaymentResultUrl(Long orderId, boolean success, String responseCode, String transactionStatus) {
+    private String buildFrontendPaymentResultUrl(Long orderId, boolean success, String responseCode,
+            String transactionStatus) {
         String baseUrl = frontendUrl;
         if (baseUrl == null || baseUrl.isBlank()) {
             String redirectUri = outboundIdentityProperties.getRedirectUri();

@@ -37,9 +37,6 @@ public class OrderServiceImpl implements OrderService {
     ProductRepository productRepository;
 
     @Autowired
-    com.organicshop.backend.service.MailService mailService;
-
-    @Autowired
     InventoryService inventoryService;
 
     @Override
@@ -60,7 +57,8 @@ public class OrderServiceImpl implements OrderService {
 
         BigDecimal total = BigDecimal.ZERO;
         List<OrderDetail> details = new ArrayList<>();
-        record PendingMovement(Product product, Integer quantity, Integer before, Integer after) {}
+        record PendingMovement(Product product, Integer quantity, Integer before, Integer after) {
+        }
         List<PendingMovement> pendingMovements = new ArrayList<>();
 
         for (CartItem item : cart.getItems()) {
@@ -79,7 +77,7 @@ public class OrderServiceImpl implements OrderService {
             detail.setProduct(product);
             detail.setQuantity(item.getQuantity());
             detail.setPrice(product.getPrice());
-            
+
             details.add(detail);
             total = total.add(product.getPrice().multiply(BigDecimal.valueOf(item.getQuantity())));
         }
@@ -98,27 +96,13 @@ public class OrderServiceImpl implements OrderService {
                     movement.after(),
                     "ORDER",
                     savedOrder.getId(),
-                    "Stock deducted after order placement"
-            );
+                    "Stock deducted after order placement");
         }
 
         cart.getItems().clear();
         cartRepository.save(cart);
 
-        // GÓI GỬI MAIL VÀO THREAD MỚI ĐỂ KHÔNG CHỜ PHẢN HỒI LÂU
-        new Thread(() -> {
-            try {
-                mailService.sendOrderConfirmation(
-                    user.getEmail(), 
-                    user.getFullName(), 
-                    savedOrder.getId(), 
-                    savedOrder.getTotalPrice().toString()
-                );
-            } catch (Exception e) {
-                // Log exception, don't fail the order just because mail failed
-                System.err.println("Failed to send order confirmation email: " + e.getMessage());
-            }
-        }).start();
+        // Đã xóa luồng gửi mail ở đây để chuyển sang lúc VNPAY thanh toán xong.
 
         return mapToDTO(savedOrder);
     }
@@ -164,8 +148,7 @@ public class OrderServiceImpl implements OrderService {
                     product.getStock(),
                     "ORDER_CANCEL",
                     order.getId(),
-                    "Stock restored after order cancellation"
-            );
+                    "Stock restored after order cancellation");
         }
 
         order.setOrderStatus(OrderStatus.CANCELLED);
