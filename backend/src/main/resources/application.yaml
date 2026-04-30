@@ -32,12 +32,13 @@ spring:
       timeout: 2000ms
   mail:
     host: smtp.gmail.com
-    port: 587
+    port: 465
     username: ${MAIL_USERNAME}
     password: ${MAIL_PASSWORD}
     properties:
       mail.smtp.auth: true
-      mail.smtp.starttls.enable: true
+      mail.smtp.ssl.enable: true
+      mail.smtp.starttls.enable: false
 
 app:
   frontend-url: ${APP_FRONTEND_URL:http://localhost:3000}
