@@ -32,7 +32,7 @@ public class OrderController {
     public ResponseEntity<ApiResponse<Page<OrderDTO>>> getMyOrders(
             @AuthenticationPrincipal UserDetailsImpl userDetails,
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "100") int size) {
         Page<OrderDTO> orders = orderService.getOrdersByUserId(userDetails.getId(), PageRequest.of(page, size));
         return ResponseEntity.ok(ApiResponse.success("Orders fetched", orders));
     }
