@@ -99,6 +99,55 @@ const postParagraphs = (content: string) =>
     .map((part) => part.trim())
     .filter(Boolean);
 
+type DetailedPostContent = {
+  intro: string;
+  sections: Array<{ heading: string; body: string }>;
+  conclusion: string;
+};
+
+const buildDetailedPostContent = (post: Post): DetailedPostContent => {
+  const baseParagraphs = postParagraphs(post.content);
+  const baseText = baseParagraphs.join(" ");
+  const safeTitle = post.title || "Bai viet";
+
+  const intro =
+    baseParagraphs[0] ??
+    `${safeTitle} la chu de duoc nhieu khach hang quan tam khi chon thuc pham sach cho bua an hang ngay.`;
+
+  const sections = [
+    {
+      heading: "Tong quan",
+      body:
+        baseParagraphs[1] ??
+        `Noi dung bai viet tap trung vao cach lua chon, so che va su dung san pham dung cach de giu duoc chat luong tu nhien. ${baseText || "Thong tin duoc trinh bay theo huong de ap dung trong sinh hoat thuc te."}`,
+    },
+    {
+      heading: "Huong dan ap dung",
+      body:
+        baseParagraphs[2] ??
+        "Buoc 1: Kiem tra do tuoi moi cua nguyen lieu theo mau sac, mui va do dan hoi. Buoc 2: So che gon gang, tranh ngam lau trong nuoc de giu vi ngot. Buoc 3: Uu tien cach che bien don gian de ton huong vi tu nhien cua thuc pham.",
+    },
+    {
+      heading: "Meo de dat hieu qua cao",
+      body:
+        baseParagraphs[3] ??
+        "Nen chia nho khau phan theo bua, bao quan dung nhiet do va ghi nho thoi diem su dung. Khi ket hop rau cu, dam va tinh bot can bang, bua an se de an hon va phu hop cho ca gia dinh.",
+    },
+    {
+      heading: "Luu y quan trong",
+      body:
+        baseParagraphs[4] ??
+        "Luon ve sinh dung cu truoc va sau khi che bien. Neu su dung nguyen lieu tuoi song, can nau chin ky va tranh dung chung thot dao giua thuc pham song va thuc pham da che bien.",
+    },
+  ];
+
+  const conclusion =
+    baseParagraphs[5] ??
+    `Tom lai, ${safeTitle.toLowerCase()} se tro nen de dang hon neu ban chuan hoa thao tac lua chon, so che va bao quan. Ap dung deu dan trong 1 den 2 tuan se thay ro chat luong bua an on dinh hon.`;
+
+  return { intro, sections, conclusion };
+};
+
 const POST_CONTENT_TEMPLATES = [
   {
     title: "Ca noc dong 1kg: Cach so che an toan va giu vi ngot tu nhien",
@@ -724,7 +773,7 @@ function JournalDetailPage() {
   }
 
   const post = postQuery.data;
-  const paragraphs = postParagraphs(post.content);
+  const detailContent = buildDetailedPostContent(post);
 
   return (
     <article className="mx-auto max-w-4xl space-y-5">
@@ -736,10 +785,18 @@ function JournalDetailPage() {
         <div className="p-7">
           <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{post.authorName}</p>
           <h1 className="mt-3 font-heading text-3xl font-bold">{post.title}</h1>
-          <div className="mt-5 space-y-4 text-sm leading-7 text-slate-700">
-            {paragraphs.length
-              ? paragraphs.map((paragraph, index) => <p key={`${post.id}-${index}`}>{paragraph}</p>)
-              : <p>{post.content}</p>}
+          <div className="mt-5 space-y-5 text-sm leading-7 text-slate-700">
+            <p className="text-base leading-8 text-slate-800">{detailContent.intro}</p>
+            {detailContent.sections.map((section) => (
+              <section key={`${post.id}-${section.heading}`} className="space-y-2">
+                <h2 className="font-heading text-xl font-bold text-slate-900">{section.heading}</h2>
+                <p>{section.body}</p>
+              </section>
+            ))}
+            <section className="space-y-2">
+              <h2 className="font-heading text-xl font-bold text-slate-900">Ket luan</h2>
+              <p>{detailContent.conclusion}</p>
+            </section>
           </div>
         </div>
       </div>
