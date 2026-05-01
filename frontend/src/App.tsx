@@ -85,6 +85,38 @@ const GOOGLE_CLIENT_ID = (import.meta.env.VITE_GOOGLE_CLIENT_ID ?? import.meta.e
 const currency = (value: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
 
+const postExcerpt = (content: string, maxLength = 150) => {
+  const clean = content.replace(/\s+/g, " ").trim();
+  if (clean.length <= maxLength) {
+    return clean;
+  }
+  return `${clean.slice(0, maxLength).trimEnd()}...`;
+};
+
+const postParagraphs = (content: string) =>
+  content
+    .split(/\r?\n+/)
+    .map((part) => part.trim())
+    .filter(Boolean);
+
+const POST_CONTENT_TEMPLATES = [
+  {
+    title: "Ca noc dong 1kg: Cach so che an toan va giu vi ngot tu nhien",
+    content:
+      "Ca noc dong la dac san theo mua, thit chac va ngot dam neu so che dung ky thuat.\n\nBuoc dau tien la loai bo sach da, mang va noi tang, sau do rua nhanh voi nuoc muoi loang, tranh ngam lau de mat do ngot cua thit.\n\nBan co the hap gung hanh, nau canh chua hoac kho tieu. Neu nau cho gia dinh, nen cat khoanh vua an, uop muoi hat, tieu xay va it gung trong 10 den 15 phut truoc khi che bien.\n\nDe bao quan, chia khau phan theo bua va cap dong ngay khi ca con tuoi. Ra dong cham trong ngan mat tu lanh truoc 6 den 8 gio se giu ket cau thit tot hon.",
+  },
+  {
+    title: "Huong dan bao quan rau cu huu co trong 7 ngay",
+    content:
+      "Rau cu huu co thuong tuoi nhanh hon vi han che chat bao quan, do do can quy trinh luu tru phu hop.\n\nSau khi mua ve, tach rieng rau an la va cu qua. Rau la nen de kho, boc trong khan giay hut am roi cho vao hop kin. Cu qua nhu ca rot, cu den, khoai tay co the de ngan rau cu voi do am vua phai.\n\nKhong nen rua toan bo rau ngay tu dau. Chi rua phan se dung trong ngay de tranh la rau bi ung nuoc.\n\nMoi 2 ngay nen kiem tra hop rau, bo phan la hong truoc de tranh lan sang phan con lai.",
+  },
+  {
+    title: "3 goi y bua toi nhanh voi thuc pham sach",
+    content:
+      "Neu ban can bua toi nhanh trong 20 den 30 phut, hay uu tien mon it buoc ma van du chat.\n\nGoi y 1: Ca kho tieu + rau muong luoc + canh cai. Goi y 2: Uc ga ap chao + salad dua leo ca chua. Goi y 3: Dau hu sot nam + bap cai xao toi.\n\nMeo tiet kiem thoi gian la so che nguyen lieu theo tung hop nho ngay tu cuoi tuan, dan nhan va bao quan lanh.\n\nKhi ket hop dam dong vat, dam thuc vat va rau xanh trong cung bua an, ban se de can bang dinh duong hon va han che an vat vao buoi toi.",
+  },
+] as const;
+
 const getErrorMessage = (error: unknown) => {
   if (typeof error === "object" && error && "response" in error) {
     const response = (error as { response?: { data?: { message?: string } } }).response;
@@ -233,6 +265,7 @@ function App() {
             element={<ProductDetailPage onAddToCart={addToCart} isAuthenticated={Boolean(token)} />}
           />
           <Route path="/journal" element={<JournalPage />} />
+          <Route path="/journal/:id" element={<JournalDetailPage />} />
           <Route
             path="/cart"
             element={
@@ -427,15 +460,22 @@ function HomePage({
       <section className="grid gap-6 lg:grid-cols-3">
         {postsQuery.data?.content.slice(0, 3).map((post: Post) => (
           <article key={post.id} className="panel overflow-hidden">
-            <img
-              src={resolveProductImage(post.thumbnail)}
-              alt={post.title}
-              className="h-56 w-full object-cover"
-            />
+            <Link to={`/journal/${post.id}`}>
+              <img
+                src={resolveProductImage(post.thumbnail)}
+                alt={post.title}
+                className="h-56 w-full object-cover"
+              />
+            </Link>
             <div className="p-6">
               <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{post.authorName}</p>
-              <h3 className="mt-3 font-heading text-xl font-bold">{post.title}</h3>
-                <p className="mt-3 text-sm text-slate-600">{post.content}</p>
+              <Link to={`/journal/${post.id}`} className="mt-3 block font-heading text-xl font-bold hover:text-moss">
+                {post.title}
+              </Link>
+              <p className="mt-3 text-sm text-slate-600">{postExcerpt(post.content)}</p>
+              <Link to={`/journal/${post.id}`} className="mt-4 inline-flex text-sm font-semibold text-moss">
+                Doc tiep
+              </Link>
             </div>
           </article>
         ))}
@@ -640,15 +680,22 @@ function JournalPage() {
         {postsQuery.data?.content.length ? (
           postsQuery.data.content.map((post: Post) => (
             <article key={post.id} className="panel overflow-hidden">
-              <img
-                src={resolveProductImage(post.thumbnail)}
-                alt={post.title}
-                className="h-56 w-full object-cover"
-              />
+              <Link to={`/journal/${post.id}`}>
+                <img
+                  src={resolveProductImage(post.thumbnail)}
+                  alt={post.title}
+                  className="h-56 w-full object-cover"
+                />
+              </Link>
               <div className="p-6">
                 <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{post.authorName}</p>
-                <h2 className="mt-3 font-heading text-xl font-bold">{post.title}</h2>
-                <p className="mt-3 text-sm leading-6 text-slate-600">{post.content}</p>
+                <Link to={`/journal/${post.id}`} className="mt-3 block font-heading text-xl font-bold hover:text-moss">
+                  {post.title}
+                </Link>
+                <p className="mt-3 text-sm leading-6 text-slate-600">{postExcerpt(post.content)}</p>
+                <Link to={`/journal/${post.id}`} className="mt-4 inline-flex text-sm font-semibold text-moss">
+                  Doc tiep
+                </Link>
               </div>
             </article>
           ))
@@ -657,6 +704,46 @@ function JournalPage() {
         )}
       </div>
     </div>
+  );
+}
+
+function JournalDetailPage() {
+  const { id = "" } = useParams();
+  const postQuery = useQuery({
+    queryKey: ["journal-post", id],
+    queryFn: () => apiClient.getPost(id),
+    enabled: Boolean(id),
+  });
+
+  if (postQuery.isLoading) {
+    return <ApiStateCard title="Dang tai bai viet" description="Vui long doi trong giay lat." />;
+  }
+
+  if (postQuery.isError || !postQuery.data) {
+    return <ApiStateCard title="Khong tim thay bai viet" description="Vui long quay lai trang bai viet." />;
+  }
+
+  const post = postQuery.data;
+  const paragraphs = postParagraphs(post.content);
+
+  return (
+    <article className="mx-auto max-w-4xl space-y-5">
+      <Link to="/journal" className="inline-flex text-sm font-semibold text-moss">
+        Quay lai danh sach bai viet
+      </Link>
+      <div className="panel overflow-hidden">
+        <img src={resolveProductImage(post.thumbnail)} alt={post.title} className="h-72 w-full object-cover" />
+        <div className="p-7">
+          <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{post.authorName}</p>
+          <h1 className="mt-3 font-heading text-3xl font-bold">{post.title}</h1>
+          <div className="mt-5 space-y-4 text-sm leading-7 text-slate-700">
+            {paragraphs.length
+              ? paragraphs.map((paragraph, index) => <p key={`${post.id}-${index}`}>{paragraph}</p>)
+              : <p>{post.content}</p>}
+          </div>
+        </div>
+      </div>
+    </article>
   );
 }
 
@@ -1559,6 +1646,18 @@ function AdminPage({
         <div className="panel px-6 py-6">
           <h2 className="font-heading text-2xl font-bold">Đăng bài viết</h2>
           <div className="mt-5 grid gap-4">
+            <div className="flex flex-wrap gap-2">
+              {POST_CONTENT_TEMPLATES.map((template, index) => (
+                <button
+                  key={template.title}
+                  type="button"
+                  onClick={() => setPostForm({ title: template.title, content: template.content })}
+                  className="rounded-full bg-sage/40 px-4 py-2 text-xs font-semibold text-moss"
+                >
+                  Mau bai {index + 1}
+                </button>
+              ))}
+            </div>
             <input
               value={postForm.title}
               onChange={(event) => setPostForm((current) => ({ ...current, title: event.target.value }))}

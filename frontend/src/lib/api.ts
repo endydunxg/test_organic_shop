@@ -210,6 +210,7 @@ export const apiClient = {
     unwrap<PageResponse<Product>>(api.get("/api/products", { params })).then(normalizeProductPage),
   getProduct: (id: string) => unwrap<Product>(api.get(`/api/products/${id}`)).then(normalizeProduct),
   getPosts: () => unwrap<PageResponse<Post>>(api.get("/api/posts")),
+  getPost: (id: string) => unwrap<Post>(api.get(`/api/posts/${id}`)),
   getReviews: (productId: string) => unwrap<PageResponse<Review>>(api.get(`/api/reviews/product/${productId}`)),
   login: (payload: { email: string; password: string }) => unwrap<AuthResponse>(api.post("/api/auth/login", payload)),
   register: (payload: { email: string; password: string; fullName: string; phone: string }) =>
