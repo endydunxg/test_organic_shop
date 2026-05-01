@@ -1,4 +1,4 @@
-import { resolveProductImage } from "../lib/image";
+﻿import { resolveProductImage } from "../lib/image";
 
 const currency = (value: number) =>
   new Intl.NumberFormat("vi-VN", { style: "currency", currency: "VND" }).format(value);
@@ -21,15 +21,11 @@ export function CartRow({
   onRemove: () => void;
 }) {
   return (
-    <div className="flex items-center gap-4 rounded-3xl border border-slate-100 p-4">
-      <img
-        src={resolveProductImage(image)}
-        alt={name}
-        className="h-24 w-24 rounded-2xl object-cover"
-      />
+    <div className="flex flex-col gap-4 rounded-3xl border border-slate-100 p-4 sm:flex-row sm:items-center">
+      <img src={resolveProductImage(image)} alt={name} className="h-24 w-24 rounded-2xl object-cover" />
       <div className="flex-1">
         <p className="font-semibold">{name}</p>
-        <div className="mt-2 flex items-center gap-3">
+        <div className="mt-2 flex flex-wrap items-center gap-3">
           <div className="flex items-center rounded-full border border-slate-200 bg-white">
             <button onClick={onDecrease} className="px-4 py-2 text-lg text-slate-600" type="button">
               -
@@ -39,12 +35,12 @@ export function CartRow({
               +
             </button>
           </div>
-          <p className="text-sm text-slate-500">Số lượng</p>
+          <p className="text-sm text-slate-500">So luong</p>
         </div>
         <p className="mt-2 font-bold text-moss">{currency(price * quantity)}</p>
       </div>
-      <button onClick={onRemove} className="button-secondary px-4 py-2" type="button">
-        Xóa
+      <button onClick={onRemove} className="button-secondary w-full px-4 py-2 sm:w-auto" type="button">
+        Xoa
       </button>
     </div>
   );

@@ -616,7 +616,7 @@ function ProductDetailPage({
         <img
           src={resolveProductImage(product.imageUrl)}
           alt={product.name}
-          className="h-[420px] w-full object-cover"
+          className="h-72 w-full object-cover sm:h-[360px] lg:h-[420px]"
         />
       </div>
       <div className="space-y-6">
