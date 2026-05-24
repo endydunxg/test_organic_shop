@@ -34,7 +34,7 @@ export function ProductCard({
         <div className="mt-5 flex items-center justify-between">
           <div>
             <p className="text-lg font-bold text-moss">{currency(product.price)}</p>
-            <p className="text-xs text-slate-400">Ton kho: {product.stock}</p>
+            <p className="text-xs text-slate-400">Tồn kho: {product.stock}</p>
           </div>
         </div>
         <div className="mt-4 flex flex-col items-stretch gap-3 sm:flex-row sm:items-center sm:justify-between">
@@ -56,7 +56,7 @@ export function ProductCard({
             </button>
           </div>
           <button onClick={() => onAdd(quantity)} className="button-primary w-full px-4 py-2 text-xs sm:w-auto" type="button">
-            {authAware ? "Them vao gio hang" : "Luu san pham"}
+            {authAware ? "Thêm vào giỏ hàng" : "Lưu sản phẩm"}
           </button>
         </div>
       </div>
