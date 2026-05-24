@@ -23,7 +23,7 @@ export function ProductCard({
       <div className="p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <span className="rounded-full bg-sage/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-moss">
-            huu co chon loc
+            hữu cơ chọn lọc
           </span>
           <span className="text-xs text-slate-400">{product.categoryName}</span>
         </div>
