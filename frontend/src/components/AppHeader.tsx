@@ -30,7 +30,7 @@ export function AppHeader({
           </div>
           <div className="min-w-0">
             <p className="truncate font-heading text-lg font-bold text-moss sm:text-xl">Organic Shop</p>
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Tuoi. Sach. Minh bach.</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Tươi. Sạch. Minh bạch.</p>
           </div>
         </Link>
 
