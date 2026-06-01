@@ -402,7 +402,7 @@ function HomePage({
             <Sparkles className="h-4 w-4" />
             Nông sản sạch, nguồn gốc rõ ràng, mua hàng gọn gàng
           </div>
-          <h1 className="max-w-2xl font-heading text-4xl font-extrabold leading-tight text-slate-900 md:text-6xl">
+          <h1 className="max-w-2xl font-sans text-4xl font-extrabold leading-tight text-slate-900 md:text-6xl">
             Cửa hàng hữu cơ chuyên nghiệp từ trang chủ đến lúc giao hàng.
           </h1>
           <p className="mt-5 max-w-2xl text-lg text-slate-600">

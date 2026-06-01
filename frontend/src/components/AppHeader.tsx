@@ -68,12 +68,12 @@ export function AppHeader({
           {token ? (
             <button onClick={onLogout} className="button-secondary shrink-0 gap-2 whitespace-nowrap">
               <LogOut className="h-4 w-4" />
-              Dang xuat
+              Đăng xuất
             </button>
           ) : (
             <Link to="/authenticate" className="button-primary shrink-0 gap-2 whitespace-nowrap">
               <UserRound className="h-4 w-4" />
-              Dang nhap
+              Đăng nhập
             </Link>
           )}
           <Link to="/cart" className="relative shrink-0 rounded-full bg-moss px-4 py-3 text-white">
