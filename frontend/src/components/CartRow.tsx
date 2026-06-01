@@ -22,7 +22,7 @@ export function CartRow({
 }) {
   return (
     <div className="flex flex-col gap-4 rounded-3xl border border-slate-100 p-4 sm:flex-row sm:items-center">
-      <img src={resolveProductImage(image)} alt={name} className="h-24 w-24 rounded-2xl object-cover" />
+      <img src={resolveProductImage(image, name)} alt={name} className="h-24 w-24 rounded-2xl object-cover" />
       <div className="flex-1">
         <p className="font-semibold">{name}</p>
         <div className="mt-2 flex flex-wrap items-center gap-3">

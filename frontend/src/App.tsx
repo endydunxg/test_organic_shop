@@ -34,7 +34,7 @@ import {
   apiClient,
   setAuthToken,
 } from "./lib/api";
-import { resolveProductImage } from "./lib/image";
+import { resolvePostImage, resolveProductImage } from "./lib/image";
 
 declare global {
   interface Window {
@@ -507,11 +507,11 @@ function HomePage({
       </section>
 
       <section className="grid gap-6 lg:grid-cols-3">
-        {postsQuery.data?.content.slice(0, 3).map((post: Post) => (
+        {postsQuery.data?.content.slice(0, 3).map((post: Post, index: number) => (
           <article key={post.id} className="panel overflow-hidden">
             <Link to={`/journal/${post.id}`}>
               <img
-                src={resolveProductImage(post.thumbnail)}
+                src={resolvePostImage(post.thumbnail, post.title, index)}
                 alt={post.title}
                 className="h-56 w-full object-cover"
               />
@@ -614,7 +614,7 @@ function ProductDetailPage({
     <div className="grid gap-6 lg:grid-cols-[1.1fr_0.9fr]">
       <div className="panel overflow-hidden">
         <img
-          src={resolveProductImage(product.imageUrl)}
+          src={resolveProductImage(product.imageUrl, product.name)}
           alt={product.name}
           className="h-72 w-full object-cover sm:h-[360px] lg:h-[420px]"
         />
@@ -727,11 +727,11 @@ function JournalPage() {
       </div>
       <div className="grid gap-6 lg:grid-cols-3">
         {postsQuery.data?.content.length ? (
-          postsQuery.data.content.map((post: Post) => (
+          postsQuery.data.content.map((post: Post, index: number) => (
             <article key={post.id} className="panel overflow-hidden">
               <Link to={`/journal/${post.id}`}>
                 <img
-                  src={resolveProductImage(post.thumbnail)}
+                  src={resolvePostImage(post.thumbnail, post.title, index)}
                   alt={post.title}
                   className="h-56 w-full object-cover"
                 />
@@ -781,7 +781,7 @@ function JournalDetailPage() {
         Quay lai danh sach bai viet
       </Link>
       <div className="panel overflow-hidden">
-        <img src={resolveProductImage(post.thumbnail)} alt={post.title} className="h-72 w-full object-cover" />
+        <img src={resolvePostImage(post.thumbnail, post.title)} alt={post.title} className="h-72 w-full object-cover" />
         <div className="p-7">
           <p className="text-xs uppercase tracking-[0.3em] text-slate-400">{post.authorName}</p>
           <h1 className="mt-3 font-heading text-3xl font-bold">{post.title}</h1>
@@ -1184,7 +1184,7 @@ function OrderDetailPage({ token }: { token: string }) {
               <div key={item.id} className="rounded-3xl border border-slate-100 p-4">
                 <div className="flex items-center gap-4">
                 <img
-                  src={resolveProductImage(item.productImageUrl)}
+                  src={resolveProductImage(item.productImageUrl, item.productName)}
                   alt={item.productName}
                   className="h-24 w-24 rounded-2xl object-cover"
                 />

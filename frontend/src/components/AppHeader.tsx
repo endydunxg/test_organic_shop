@@ -30,7 +30,7 @@ export function AppHeader({
           </div>
           <div className="min-w-0">
             <p className="truncate font-heading text-lg font-bold text-moss sm:text-xl">Organic Shop</p>
-            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Tuoi. Sach. Minh bach.</p>
+            <p className="text-xs uppercase tracking-[0.3em] text-slate-500">Tươi. Sạch. Minh bạch.</p>
           </div>
         </Link>
 
@@ -42,18 +42,18 @@ export function AppHeader({
           <input
             value={keyword}
             onChange={(event) => onKeywordChange(event.target.value)}
-            placeholder="Tim rau cu, trai cay, thuc pham huu co..."
+            placeholder="Tìm rau củ, trái cây, thực phẩm hữu cơ..."
             className="w-full bg-transparent text-sm outline-none"
           />
         </form>
 
         <nav className="flex items-center gap-2 overflow-x-auto pb-1 text-sm font-medium">
           {[
-            ["/products", "San pham"],
-            ["/journal", "Bai viet"],
-            ["/cart", "Gio hang"],
-            ["/profile", "Ca nhan"],
-            ...(isAdmin ? [["/admin", "Quan tri"]] : []),
+            ["/products", "Sản phẩm"],
+            ["/journal", "Bài viết"],
+            ["/cart", "Giỏ hàng"],
+            ["/profile", "Cá nhân"],
+            ...(isAdmin ? [["/admin", "Quản trị"]] : []),
           ].map(([href, label]) => (
             <NavLink
               key={href}

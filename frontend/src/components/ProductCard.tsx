@@ -19,7 +19,7 @@ export function ProductCard({
 
   return (
     <article className="panel overflow-hidden transition hover:-translate-y-1">
-      <img src={resolveProductImage(product.imageUrl)} alt={product.name} className="h-56 w-full object-cover" />
+      <img src={resolveProductImage(product.imageUrl, product.name)} alt={product.name} className="h-56 w-full object-cover" />
       <div className="p-5">
         <div className="mb-3 flex flex-wrap items-center justify-between gap-2">
           <span className="rounded-full bg-sage/40 px-3 py-1 text-xs font-semibold uppercase tracking-[0.15em] text-moss">
